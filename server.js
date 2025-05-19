@@ -10,7 +10,7 @@ const userRoutes = require('./routes/userRoutes');
 const app = express();
 
 app.use(cors({
-    origin: 'https://rest-countries-app-front-git-61db44-sdinukarathnayakes-projects.vercel.app/',
+    origin: 'https://rest-countries-app-front-git-61db44-sdinukarathnayakes-projects.vercel.app',
     credentials: true
 }));
   
