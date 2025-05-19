@@ -52,7 +52,7 @@ const login = async (req, res) => {
             token,
             user: {
                 id: user._id,
-                username: user.username,
+                name: user.name,
                 email: user.email,
                 role: user.role,
             },
@@ -151,11 +151,48 @@ const toggleFavoriteCountry = async (req, res) => {
 };
 
 
+const updateUser = async (req, res) => {
+    const userId = req.user.id;
+    const { name, email, password } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        user.name = name || user.name;
+        user.email = email || user.email;
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user.password = hashedPassword;
+        }
+
+        await user.save();
+        res.status(200).json({ message: "Profile updated successfully", user });
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+const deleteUser = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        await User.findByIdAndDelete(userId);
+        res.status(200).json({ message: "Account deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
 module.exports = {
     register,
     login,
     logout,
     setFavoriteCountry,
     getFavoriteCountry,
-    toggleFavoriteCountry
+    toggleFavoriteCountry,
+    updateUser,
+    deleteUser
 };

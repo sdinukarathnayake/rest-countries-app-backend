@@ -10,7 +10,7 @@ const userRoutes = require('./routes/userRoutes');
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5173https://rest-countries-app-front-git-61db44-sdinukarathnayakes-projects.vercel.app',
+    origin: 'https://rest-countries-app-front-git-61db44-sdinukarathnayakes-projects.vercel.app/',
     credentials: true
 }));
   
@@ -18,17 +18,19 @@ app.use(express.json());
 
 app.use('/users', userRoutes);
 
-const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI;
-
-mongoose.connect(MONGO_URI)
-.then(() => {
-    console.log('MongoDB connected successfully');
-
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+if (process.env.NODE_ENV !== 'test') {
+    const PORT = process.env.PORT || 5000;
+    mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log('MongoDB connected successfully');
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error('MongoDB connection failed:', err.message);
     });
-})
-.catch((err) => {
-    console.error('MongoDB connection failed:', err.message);
-});
+}
+
+
+module.exports = app;
